@@ -21,7 +21,7 @@ IMAGE_SIZE = (150, 150)
 
 #loading the data
 def load_data():
-    DIRECTORY = r"C:\Users\bryan\OneDrive\Documents\Faith Programming Projects\Image Classification Demo"
+    DIRECTORY = r"C:\Users\faith\OneDrive\Documents\Image_Classification"
     CATEGORY = ["seg_train", "seg_test"]
 
     output = []
