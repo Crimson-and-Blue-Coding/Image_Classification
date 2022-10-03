@@ -1,5 +1,5 @@
 import numpy as np
-import pandas as pd
+# import pandas as pd
 import os
 from sklearn.metrics import classification_report
 import seaborn as sn; sn.set(font_scale=1.4)
@@ -7,9 +7,10 @@ from sklearn.utils import shuffle
 import matplotlib.pyplot as plt
 import cv2
 import tensorflow as tf
-from tqdm import tqdm
+# from tqdm import tqdm
+from sklearn.model_selection import RandomizedSearchCV
 
-class_names = ['buildings', 'forest', 'glacier', 'mountain', 'sea', 'street']
+class_names = ['malignant', 'benign']
 class_names_label = {class_name: i for i, class_name in enumerate(class_names)}
 
 nb_classes = len(class_names)
@@ -22,7 +23,7 @@ IMAGE_SIZE = (150, 150)
 #loading the data
 def load_data():
     DIRECTORY = r"C:\Users\faith\OneDrive\Documents\Image_Classification"
-    CATEGORY = ["seg_train", "seg_test"]
+    CATEGORY = ["train", "test"]
 
     output = []
 
@@ -74,7 +75,7 @@ def display_examples(class_names, images, labels):
         plt.xlabel(class_names[labels[i]])
     plt.show()
 
-display_examples(class_names, train_images, train_labels) 
+# display_examples(class_names, train_images, train_labels) 
 
 model = tf.keras.Sequential([ 
     tf.keras.layers.Conv2D(32, (3,3), activation = 'relu', input_shape = (150, 150, 3)),
@@ -87,7 +88,7 @@ model = tf.keras.Sequential([
 ])
 
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-history = model.fit(train_images, train_labels, batch_size=128, epochs=4, validation_split=0.2)
+history = model.fit(train_images, train_labels, batch_size=128, epochs=20, validation_split=0.2)
 
 def plot_accuracy_loss(history):
     #plot the accuracy and the loss during training of the nn
@@ -104,5 +105,11 @@ def plot_accuracy_loss(history):
 
     #plot loss function
     plt.subplot(222)
+    plt.show()
+
+plot_accuracy_loss(history)
 
 
+
+#gridsearch
+    #nested for loop of two different sets of what you want your hyperparameters to be
