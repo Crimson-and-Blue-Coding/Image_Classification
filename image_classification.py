@@ -109,6 +109,18 @@ def plot_accuracy_loss(history):
 
 plot_accuracy_loss(history)
 
+"""Exporting the Model"""
+#prompt user to save the model
+save_model = input("Do you wish to save this model [y/n]: ").strip().lower()
+
+if save_model == 'y' or save_model == 'yes':
+    model_name = input("Model Name: ").strip()
+    #IDK if this will actually work. It is how the tutorial I found demonstrated saving their model.
+    #Model name must end in .hdf5
+    try:
+        tf.keras.models.save_model(model, model_name)
+    except:
+        print("Saving failed...")
 
 
 #gridsearch
