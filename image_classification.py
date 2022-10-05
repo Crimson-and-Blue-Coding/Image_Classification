@@ -21,7 +21,7 @@ IMAGE_SIZE = (150, 150)
 
 #loading the data
 def load_data():
-    DIRECTORY = r"C:\Users\faith\OneDrive\Documents\Image_Classification"
+    DIRECTORY = r"C:\Users\clee1\miniconda3\envs\tf\BioScan\Image_Classification"
     CATEGORY = ["seg_train", "seg_test"]
 
     output = []
@@ -69,8 +69,8 @@ def display_examples(class_names, images, labels):
         plt.xticks([])
         plt.yticks([])
         plt.grid(False)
-        image = cv2.resize(images[i], figsize)
-        plt.imshow(image.astype(np.uint8)) #used to be a float
+        # image = cv2.resize(images[i], figsize)
+        plt.imshow(images[i].astype(np.uint8)) #used to be a float
         plt.xlabel(class_names[labels[i]])
     plt.show()
 
@@ -103,6 +103,8 @@ def plot_accuracy_loss(history):
     plt.legend()
 
     #plot loss function
-    plt.subplot(222)
+    #plt.subplot(222)
+    plt.show()
+
 
 
