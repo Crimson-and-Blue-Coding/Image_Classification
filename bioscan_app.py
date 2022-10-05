@@ -16,7 +16,6 @@ import streamlit as st
 import numpy as np
 import tensorflow as tf
 import cv2
-#Not sure if we'll actually need this, not sure what it does...
 from PIL import Image, ImageOps
 
 #Importing the model
@@ -28,7 +27,12 @@ IMAGE_SIZE = (150, 150)
 '''Functions'''
 def image_conversion(image):
     """
-    
+    Author: Cody Ptacek
+    Inputs: image (jpeg or png)
+    Outputs: data array
+    Creation Date: 10/04/2022
+    Purpose:
+        Processes a provided image so that it can be input into a model.
     """
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) #Converts image to RGB. Better for model.
     image = cv2.resize(image, IMAGE_SIZE) #Resizes the image to a standard size for the model.
@@ -38,7 +42,11 @@ def image_conversion(image):
 
 def run_model(image, model):
     """
-    
+    Author: Cody Ptacek
+    Inputs: image, tensoflow model (.hdf5 file)
+    Outputs: np array?
+    Creation Date: 10/04/2022
+    Purpose: Takes a provided image and runs it through the provided tensorflow machine learning model.
     """
     return model.predict(image_conversion(image))
 
