@@ -45,7 +45,7 @@ def image_conversion(image):
 
     st.write(image.shape)
 
-    image.reshape(1, image.shape[0], image.shape[1], image.shape[2])
+    image = image.reshape(1, image.shape[0], image.shape[1], image.shape[2])
 
     return image
 
