@@ -19,7 +19,7 @@ import cv2
 from PIL import Image, ImageOps
 
 #Importing the model
-model = tf.keras.models.load_model('model_name.hdf5')
+model = tf.keras.models.load_model('First_Model.hdf5')
 
 '''Constant Variables'''
 IMAGE_SIZE = (150, 150)
@@ -34,9 +34,16 @@ def image_conversion(image):
     Purpose:
         Processes a provided image so that it can be input into a model.
     """
+    size = (150,150)
+
+    #image = ImageOps.fit(image, size, Image.ANTIALIAS)
+
+    image = np.array(image)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) #Converts image to RGB. Better for model.
     image = cv2.resize(image, IMAGE_SIZE) #Resizes the image to a standard size for the model.
-    image = np.array(image, dtype= 'float32') #Honestly, not sure what this does or if it is needed...
+    #image = np.array(image, dtype= 'float32') #Honestly, not sure what this does or if it is needed...
+
+    st.write(image.shape)
 
     return image
 
@@ -48,7 +55,9 @@ def run_model(image, model):
     Creation Date: 10/04/2022
     Purpose: Takes a provided image and runs it through the provided tensorflow machine learning model.
     """
-    return model.predict(image_conversion(image))
+    conversion = image_conversion(image)
+    st.write(conversion.shape)
+    return model.predict(conversion)
 
 '''Webpage Code'''
 #Text to display on the webpage.
