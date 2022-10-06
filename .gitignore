@@ -1,2 +1,4 @@
 test/
 train/
+seg_test/
+seg_train/
