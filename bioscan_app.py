@@ -10,7 +10,7 @@ Purpose:
         the skin condition as well.
 """
 
-'''Imports'''
+#===================================Imports=======================================
 #Library Imports
 import streamlit as st
 import numpy as np
@@ -18,13 +18,13 @@ import tensorflow as tf
 import cv2
 from PIL import Image, ImageOps
 
-#Importing the model
+#=========================Importing the model=================================
 model = tf.keras.models.load_model('First_Model.hdf5')
 
-'''Constant Variables'''
+#=============================Constant Variables==================================
 IMAGE_SIZE = (150, 150)
 
-'''Functions'''
+#==================================Functions==========================================
 def image_conversion(image):
     """
     Author: Cody Ptacek
@@ -45,6 +45,8 @@ def image_conversion(image):
 
     st.write(image.shape)
 
+    image.reshape(1, image.shape[0], image.shape[1], image.shape[2])
+
     return image
 
 def run_model(image, model):
@@ -59,7 +61,7 @@ def run_model(image, model):
     st.write(conversion.shape)
     return model.predict(conversion)
 
-'''Webpage Code'''
+#================================Webpage Code====================================
 #Text to display on the webpage.
 st.write('# BioScan')
 st.write('An image classifier.\n\n')
