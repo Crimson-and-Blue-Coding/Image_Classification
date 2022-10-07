@@ -19,7 +19,7 @@ import cv2
 from PIL import Image, ImageOps
 
 #=========================Importing the model=================================
-model = tf.keras.models.load_model('First_Model.hdf5')
+model = tf.keras.models.load_model('fixed_last_layer.hdf5')
 
 #=============================Constant Variables==================================
 IMAGE_SIZE = (150, 150)
@@ -66,7 +66,7 @@ def run_model(image, model):
 st.write('# BioScan')
 st.write('An image classifier.\n\n')
 st.write('To use BioScan take a picture of your skin condition and save it as a jpg or png.')
-st.write('Import the image bellow.')
+st.write('Import the image below.')
 
 #Prompts user to upload a file.
 user_image = st.file_uploader("Please upload an image file", type = ["jpg", "png"])
