@@ -1,8 +1,6 @@
 """
-Author(s):
-    Cody Ptacek
 Date Created: 10/04/2022
-Last Modified: 10/08/2022
+Last Modified: 10/09/2022
 Purpose:
     The web app file for BioScan. Uses streamlit. 
     Application takes an image from user and classifies the category of skin condition that 
@@ -27,7 +25,6 @@ IMAGE_SIZE = (150, 150)
 #==================================Functions==========================================
 def image_conversion(image):
     """
-    Author: Cody Ptacek
     Inputs: image (jpeg or png)
     Outputs: data array
     Creation Date: 10/04/2022
@@ -47,9 +44,8 @@ def image_conversion(image):
 
 def run_model(image, model):
     """
-    Author: Cody Ptacek
     Inputs: image, tensoflow model (.hdf5 file)
-    Outputs: np array?
+    Outputs: np array
     Creation Date: 10/04/2022
     Purpose: Takes a provided image and runs it through the provided tensorflow machine learning model.
     """
@@ -67,7 +63,8 @@ st.title('BioScan')
 st.subheader('An image classifier.\n\n')
 st.sidebar.subheader('Disclaimer')
 st.sidebar.write('This is a program created by four computer science students who are not capable of giving valid medical advaice.')
-st.sidebar.write('Please do not use this site as valid medical advice. ')
+st.sidebar.write('Please do not use this site for valid medical advice. ')
+st.sidebar.write('If you are in doubt about your health see a doctor!')
 st.header('Instructions')
 st.write('To use BioScan take a picture of your skin condition and save it as a jpg or png.')
 st.write('Import the image below.')
@@ -92,24 +89,23 @@ else:
             st.write("Our image clasifier labeled it as 'Benign'")
             st.subheader("Remember:")
             st.write("This is an image classifier created by four students.")
+            st.write("It was created for a class project.")
             st.write("It should not be taken as valid medical advice.")
-            st.write("If you are concerned about your condition, see a doctor!")
+            st.write("If you are concerned about your condition see a doctor!")
         else:
             st.header("Results:")
             st.write("Our image classifier labeled it as 'Malignant'")
             st.header("Remember:")
-            st.write("This is an image classifier created by four students.")
+            st.write("This is an image classifier created by four computer science students.")
+            st.write("It was created for a class project.")
             st.write("It should not be taken as valid medical advice.")
-            st.write("If you are concerned about your condition, see a doctor!")
+            st.write("If you are concerned about your condition see a doctor!")
         #Shold present the prediction as a nice little table of % likelihoods. 
         st.write(prediction)
-
-        #edit_prediction(prediction)
-
-        #st.write(prediction)
 
     else:
         st.header('Acknowledge Disclaimer')
         st.write('Before your results are processed, please acknowledge that you understand that this program does not provide valid medical advice.')
-        st.write("It is a program writen by four students and should not be taken as medical advice.")
+        st.write("It is a program writen by four computer science students who have no medical experience. The project is more of a proof of concept.")
+        st.write('No classifications provided by this program should be treated as medical advice!')
         st.write("If you are concerned about your health, visit a doctor.")
