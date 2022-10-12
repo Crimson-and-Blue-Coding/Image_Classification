@@ -1,8 +1,6 @@
 """
-Author(s):
-    Cody Ptacek
 Date Created: 10/04/2022
-Last Modified: 10/04/2022
+Last Modified: 10/09/2022
 Purpose:
     The web app file for BioScan. Uses streamlit. 
     Application takes an image from user and classifies the category of skin condition that 
@@ -10,53 +8,66 @@ Purpose:
         the skin condition as well.
 """
 
-'''Imports'''
+#===================================Imports=======================================
 #Library Imports
 import streamlit as st
 import numpy as np
 import tensorflow as tf
 import cv2
-from PIL import Image, ImageOps
+from PIL import Image
 
-#Importing the model
-model = tf.keras.models.load_model('First_Model.hdf5')
+#=========================Importing the model=================================
+model = tf.keras.models.load_model('fixed_last_layer.hdf5')
 
-'''Constant Variables'''
+#=============================Constant Variables==================================
 IMAGE_SIZE = (150, 150)
 
-'''Functions'''
+#==================================Functions==========================================
 def image_conversion(image):
     """
-    Author: Cody Ptacek
     Inputs: image (jpeg or png)
     Outputs: data array
     Creation Date: 10/04/2022
     Purpose:
         Processes a provided image so that it can be input into a model.
     """
-    st.write(image)
+
+    image = np.array(image)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) #Converts image to RGB. Better for model.
     image = cv2.resize(image, IMAGE_SIZE) #Resizes the image to a standard size for the model.
-    image = np.array(image, dtype= 'float32') #Honestly, not sure what this does or if it is needed...
+
+    st.write(image.shape)
+
+    image = image.reshape(1, image.shape[0], image.shape[1], image.shape[2])
 
     return image
 
 def run_model(image, model):
     """
-    Author: Cody Ptacek
     Inputs: image, tensoflow model (.hdf5 file)
-    Outputs: np array?
+    Outputs: np array
     Creation Date: 10/04/2022
     Purpose: Takes a provided image and runs it through the provided tensorflow machine learning model.
     """
-    return model.predict(image_conversion(image))
+    conversion = image_conversion(image)
+    st.write(conversion.shape)
+    return model.predict(conversion)
 
-'''Webpage Code'''
+def edit_prediction(prediction):
+    prediction[0] = 'Benign'
+    prediction[1] = 'Malignant'
+
+#================================Webpage Code====================================
 #Text to display on the webpage.
-st.write('# BioScan')
-st.write('An image classifier.\n\n')
+st.title('BioScan')
+st.subheader('An image classifier.\n\n')
+st.sidebar.subheader('Disclaimer')
+st.sidebar.write('This is a program created by four computer science students who are not capable of giving valid medical advaice.')
+st.sidebar.write('Please do not use this site for valid medical advice. ')
+st.sidebar.write('If you are in doubt about your health see a doctor!')
+st.header('Instructions')
 st.write('To use BioScan take a picture of your skin condition and save it as a jpg or png.')
-st.write('Import the image bellow.')
+st.write('Import the image below.')
 
 #Prompts user to upload a file.
 user_image = st.file_uploader("Please upload an image file", type = ["jpg", "png"])
@@ -68,17 +79,34 @@ if user_image is None:
     st.text("Please upload an image file!")
 else:
     #If image is provided
-    image = Image.open(user_image) #opens the image-like element uploades as an image
-    st.image(image, use_column_width=True)
-    st.write(image) #displays the provided image on the web app
-    prediction = run_model(image, model) #runs the image through the model stores as in variable prediction
+    if st.button("Acknowledge Disclaimer"):
+        image = Image.open(user_image) #opens the image-like element uploades as an image
+        st.image(image, use_column_width=True) #displays the provided image on the web app
+        prediction = run_model(image, model) #runs the image through the model stores as in variable prediction
 
-    #Gives answer based on prediction.
-    #I guessed how the output would look. We should discuss together.
-    if np.argmax(prediction) == 0:
-        st.write("It is likely benign")
+        #Gives answer based on prediction.
+        #I guessed how the output would look. We should discuss together.
+        if np.argmax(prediction) == 0:
+            st.write("Our image clasifier labeled it as 'Benign'")
+            st.subheader("Remember:")
+            st.write("This is an image classifier created by four students.")
+            st.write("It was created for a class project.")
+            st.write("It should not be taken as valid medical advice.")
+            st.write("If you are concerned about your condition see a doctor!")
+        else:
+            st.header("Results:")
+            st.write("Our image classifier labeled it as 'Malignant'")
+            st.header("Remember:")
+            st.write("This is an image classifier created by four computer science students.")
+            st.write("It was created for a class project.")
+            st.write("It should not be taken as valid medical advice.")
+            st.write("If you are concerned about your condition see a doctor!")
+        #Shold present the prediction as a nice little table of % likelihoods. 
+        st.write(prediction)
+
     else:
-        st.write("It is likely malignant! See a doctor!")
-
-    #Shold present the prediction as a nice little table of % likelihoods. 
-    st.write(prediction)
+        st.header('Acknowledge Disclaimer')
+        st.write('Before your results are processed, please acknowledge that you understand that this program does not provide valid medical advice.')
+        st.write("It is a program writen by four computer science students who have no medical experience. The project is more of a proof of concept.")
+        st.write('No classifications provided by this program should be treated as medical advice!')
+        st.write("If you are concerned about your health, visit a doctor.")
