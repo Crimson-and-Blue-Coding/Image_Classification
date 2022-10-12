@@ -70,8 +70,15 @@ st.write('To use BioScan take a picture of your skin condition and save it as a 
 st.write('Import the image below.')
 
 #Prompts user to upload a file.
-user_image = st.file_uploader("Please upload an image file", type = ["jpg", "png"])
-st.write(user_image.name)
+options = ['File Upload', 'WebCam Upload']
+option = st.radio('Select an option:', options)
+if option == 'File Upload':
+    user_image = st.file_uploader("Please upload an image file", type = ["jpg", "png"])
+else:
+    user_image = st.camera_input("Take a picture")
+
+if user_image:
+    st.write(user_image.name)
 
 #Code for processing the image. 
 if user_image is None:
