@@ -10,7 +10,7 @@ import tensorflow as tf
 # from tqdm import tqdm
 from sklearn.model_selection import RandomizedSearchCV
 
-class_names = ['malignant', 'benign']
+class_names = ['buildings', 'forest', 'glacier', 'mountain', 'sea', 'street']
 class_names_label = {class_name: i for i, class_name in enumerate(class_names)}
 
 nb_classes = len(class_names)
@@ -104,16 +104,14 @@ def plot_accuracy_loss(history):
     plt.legend()
 
     #plot loss function
-<<<<<<< HEAD
-    #plt.subplot(222)
-    plt.show()
-
-=======
     plt.subplot(222)
     plt.show()
 
 plot_accuracy_loss(history)
 
+model.save("Image_Classification")
+
+'''
 """Exporting the Model"""
 #prompt user to save the model
 save_model = input("Do you wish to save this model [y/n]: ").strip().lower()
@@ -126,8 +124,8 @@ if save_model == 'y' or save_model == 'yes':
         tf.keras.models.save_model(model, model_name)
     except:
         print("Saving failed...")
->>>>>>> db78b31ae1c7ccb5956da6e903c09b367f552d59
 
 
 #gridsearch
     #nested for loop of two different sets of what you want your hyperparameters to be
+'''

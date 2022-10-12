@@ -19,7 +19,7 @@ import cv2
 from PIL import Image, ImageOps
 
 #Importing the model
-model = tf.keras.models.load_model('model_name.hdf5')
+model = tf.keras.models.load_model('First_Model.hdf5')
 
 '''Constant Variables'''
 IMAGE_SIZE = (150, 150)
@@ -34,6 +34,7 @@ def image_conversion(image):
     Purpose:
         Processes a provided image so that it can be input into a model.
     """
+    st.write(image)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) #Converts image to RGB. Better for model.
     image = cv2.resize(image, IMAGE_SIZE) #Resizes the image to a standard size for the model.
     image = np.array(image, dtype= 'float32') #Honestly, not sure what this does or if it is needed...
@@ -59,6 +60,7 @@ st.write('Import the image bellow.')
 
 #Prompts user to upload a file.
 user_image = st.file_uploader("Please upload an image file", type = ["jpg", "png"])
+st.write(user_image.name)
 
 #Code for processing the image. 
 if user_image is None:
@@ -67,7 +69,8 @@ if user_image is None:
 else:
     #If image is provided
     image = Image.open(user_image) #opens the image-like element uploades as an image
-    st.image(image, use_column_width=True) #displays the provided image on the web app
+    st.image(image, use_column_width=True)
+    st.write(image) #displays the provided image on the web app
     prediction = run_model(image, model) #runs the image through the model stores as in variable prediction
 
     #Gives answer based on prediction.
