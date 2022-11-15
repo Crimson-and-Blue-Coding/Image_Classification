@@ -15,9 +15,14 @@ import numpy as np
 import tensorflow as tf
 import cv2
 from PIL import Image
+import pickle
+
+#Class Import
+from conditions import Conditions
 
 #=========================Importing the model=================================
-model = tf.keras.models.load_model('fixed_last_layer.hdf5')
+model = pickle.load("12_epochs.pkl")
+#model = tf.keras.models.load_model('fixed_last_layer.hdf5')
 
 #=============================Constant Variables==================================
 IMAGE_SIZE = (150, 150)
@@ -124,28 +129,27 @@ else:
 
         #Gives answer based on prediction.
         #I guessed how the output would look. We should discuss together.
-        if np.argmax(prediction) == 0:
+        condition = Conditions()
+        condition.generateResults(np.argmax(prediction))
+        if condition.conditionName == "Benign":
             st.balloons()
-            st.write("Our image clasifier labeled it as 'Benign'")
-            st.subheader("Remember:")
-            st.write("This is an image classifier created by four students.")
-            st.write("It was created for a class project.")
-            st.write("It should not be taken as valid medical advice.")
-            st.write("If you are concerned about your condition see a doctor!")
-            if counter >= 3:
-                st.write("You checked 3 or more of the symptoms in the check box:") 
-                st.write("Because of this, if you are still worried about your condition even after the benign results, it is recommended to see a doctor!")
-        else:
-            st.header("Results:")
-            st.write("Our image classifier labeled it as 'Malignant'")
-            st.header("Remember:")
-            st.write("This is an image classifier created by four computer science students.")
-            st.write("It was created for a class project.")
-            st.write("It should not be taken as valid medical advice.")
-            st.write("If you are concerned about your condition see a doctor!")
-            if counter >= 3:
-                st.write("You checked 3 or more of the symptoms in the check box:") 
-                st.write("Because of this and your results, it is  highly recommended to see a doctor!")
+        
+        st.write(f"Our image clasifier labeled it as '{condition.conditionName}'")
+        st.subheader("More Information:")
+        st.write(f"{condition.conditionName}")
+        st.write(condition.description)
+        st.write(f"Related Links:")
+        for name,link in condition.links:
+            st.write{f"[{name}]({link})"}
+        st.subheader("Remember:")
+        st.write("This is an image classifier created by four students.")
+        st.write("It was created for a class project.")
+        st.write("It should not be taken as valid medical advice.")
+        st.write("If you are concerned about your condition see a doctor!")
+        if counter >= 3:
+            st.write("You checked 3 or more of the symptoms in the check box:") 
+            st.write("Because of this, if you are still worried about your condition even after the benign results, it is recommended to see a doctor!")
+
         #Shold present the prediction as a nice little table of % likelihoods. 
         st.write(prediction)
 
