@@ -10,7 +10,7 @@ import tensorflow as tf
 # from tqdm import tqdm
 from sklearn.model_selection import RandomizedSearchCV
 
-class_names = ['malignant', 'benign']
+class_names = ['buildings', 'forest', 'glacier', 'mountain', 'sea', 'street']
 class_names_label = {class_name: i for i, class_name in enumerate(class_names)}
 
 nb_classes = len(class_names)
@@ -22,8 +22,8 @@ IMAGE_SIZE = (150, 150)
 
 #loading the data
 def load_data():
-    DIRECTORY = r"C:\Users\faith\OneDrive\Documents\Image_Classification"
-    CATEGORY = ["train", "test"]
+    DIRECTORY = r"C:\Users\clee1\miniconda3\envs\tf\BioScan\Image_Classification"
+    CATEGORY = ["seg_train", "seg_test"]
 
     output = []
 
@@ -70,8 +70,8 @@ def display_examples(class_names, images, labels):
         plt.xticks([])
         plt.yticks([])
         plt.grid(False)
-        image = cv2.resize(images[i], figsize)
-        plt.imshow(image.astype(np.uint8)) #used to be a float
+        # image = cv2.resize(images[i], figsize)
+        plt.imshow(images[i].astype(np.uint8)) #used to be a float
         plt.xlabel(class_names[labels[i]])
     plt.show()
 
@@ -109,6 +109,9 @@ def plot_accuracy_loss(history):
 
 plot_accuracy_loss(history)
 
+model.save("Image_Classification")
+
+'''
 """Exporting the Model"""
 #prompt user to save the model
 save_model = input("Do you wish to save this model [y/n]: ").strip().lower()
@@ -125,3 +128,4 @@ if save_model == 'y' or save_model == 'yes':
 
 #gridsearch
     #nested for loop of two different sets of what you want your hyperparameters to be
+'''
