@@ -21,8 +21,7 @@ import pickle
 from conditions import Conditions
 
 #=========================Importing the model=================================
-model = pickle.load("12_epochs.pkl")
-#model = tf.keras.models.load_model('fixed_last_layer.hdf5')
+model = tf.keras.models.load_model('fixed_last_layer.hdf5')
 
 #=============================Constant Variables==================================
 IMAGE_SIZE = (150, 150)
@@ -140,7 +139,7 @@ else:
         st.write(condition.description)
         st.write(f"Related Links:")
         for name,link in condition.links:
-            st.write{f"[{name}]({link})"}
+            st.write(f"[{name}]({link})")
         st.subheader("Remember:")
         st.write("This is an image classifier created by four students.")
         st.write("It was created for a class project.")
