@@ -19,5 +19,5 @@ class Conditions:
             self.links = [('Cleveland Clinic', "https://my.clevelandclinic.org/health/diseases/12014-moles-freckles-skin-tags-lentigines-and-seborrheic-keratoses#:~:text=What%20are%20benign%20skin%20lesions,benign%20lentigines%2C%20and%20seborrheic%20keratoses"), ('John Hopkins Medicine', "https://www.hopkinsmedicine.org/health/conditions-and-diseases/other-benign-skin-growths")]
         elif model_outcome == 1:
             self.conditionName = "Malignant"
-            self.description = "Malignant skin lesions are those were the cells are growing out of control and spreading into other, unrelated tissues. This is the type of condition that people commonly refer to as cancer."
+            self.description = "Malignant skin lesions are those where the cells are growing out of control and spreading into other, unrelated tissues. This is the type of condition that people commonly refer to as cancer."
             self.links = [('WebMD', "https://www.webmd.com/melanoma-skin-cancer/ss/skin-cancer-and-skin-lesions-overview"), ('CDC', "https://www.cdc.gov/cancer/skin/basic_info/index.htm")]
