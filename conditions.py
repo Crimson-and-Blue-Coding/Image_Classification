@@ -15,7 +15,7 @@ class Conditions:
     def generateResults(self, model_outcome):
         if model_outcome == 0:
             self.conditionName = "Benign"
-            self.description = "Benign skin lesions are a form of non-cancerous skin growth. Benign skin lessions is a classification used for any number of conditions ranging from common acne to rashes or sores"
+            self.description = "Benign skin lesions are a form of non-cancerous skin growth. Benign skin lesions is a classification used for any number of conditions ranging from common acne to rashes or sores"
             self.links = [('Cleveland Clinic', "https://my.clevelandclinic.org/health/diseases/12014-moles-freckles-skin-tags-lentigines-and-seborrheic-keratoses#:~:text=What%20are%20benign%20skin%20lesions,benign%20lentigines%2C%20and%20seborrheic%20keratoses"), ('John Hopkins Medicine', "https://www.hopkinsmedicine.org/health/conditions-and-diseases/other-benign-skin-growths")]
         elif model_outcome == 1:
             self.conditionName = "Malignant"

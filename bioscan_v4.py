@@ -11,11 +11,12 @@ Purpose:
 #===================================Imports=======================================
 #Library Imports
 import streamlit as st
+import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 import cv2
 from PIL import Image
-import pickle
+import pandas as pd
 
 #Class Import
 from conditions import Conditions
@@ -150,12 +151,26 @@ else:
         st.markdown(basic + "It should not be taken as valid medical advice" +"</p>", unsafe_allow_html=True)
         st.markdown(basic + "If you are concerned about your condition see a doctor!" +"</p>", unsafe_allow_html=True) 
 
-        if counter >= 3:
+        if counter >= 5 or 'Burning Sensation' in options:
             st.markdown(basic + "You checked 3 or more of the symptoms in the check box:" +"</p>", unsafe_allow_html=True) 
             st.markdown(basic + "Because of this, if you are still worried about your condition even after the benign results, it is recommended to see a doctor!" +"</p>", unsafe_allow_html=True) 
             
         #Shold present the prediction as a nice little table of % likelihoods. 
-        st.write(prediction)
+        prediction_dict = {'Benign': [prediction[0][0]], 'Malignant': [prediction[0][1]]}
+        st.table(pd.DataFrame.from_dict(prediction_dict))
+
+        benign_percent = prediction[0][0]
+        malignant_percent = prediction[0][1]
+        labels = ['Benign', 'Malignant']
+        sizes = [benign_percent, malignant_percent]
+
+        fig1, ax1 = plt.subplots()
+        explode = (0, 0.1)
+        ax1.pie(sizes, explode=explode, labels=labels, atopct='%1.1f%%', shadow=True, startangle=90)
+
+        ax1.axis('equal')
+
+        st.pyplot(fig1)
 
     else:
         st.markdown(subheader + 'Acknowledge Disclaimer' + "</p>", unsafe_allow_html=True)
