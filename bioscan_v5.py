@@ -11,11 +11,12 @@ Purpose:
 #===================================Imports=======================================
 #Library Imports
 import streamlit as st
+import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 import cv2
 from PIL import Image
-import pickle
+import pandas as pd
 
 #Class Import
 from conditions import Conditions
@@ -44,7 +45,7 @@ def image_conversion(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) #Converts image to RGB. Better for model.
     image = cv2.resize(image, IMAGE_SIZE) #Resizes the image to a standard size for the model.
 
-    st.write(image.shape)
+    #st.write(image.shape)
 
     image = image.reshape(1, image.shape[0], image.shape[1], image.shape[2])
 
@@ -58,7 +59,7 @@ def run_model(image, model):
     Purpose: Takes a provided image and runs it through the provided tensorflow machine learning model.
     """
     conversion = image_conversion(image)
-    st.write(conversion.shape)
+    #st.write(conversion.shape)
     return model.predict(conversion)
 
 def edit_prediction(prediction):
@@ -174,8 +175,22 @@ else:
             st.markdown(basic + f"You have {outOf}% of the symptoms in the survey:" +"</p>", unsafe_allow_html=True) 
             st.markdown(basic + "Because of this, if you are still worried about your condition even after the results, it is recommended to see a doctor!" +"</p>", unsafe_allow_html=True) 
             
-        #Shold present the prediction as a nice little table of % likelihoods. 
-        st.write(prediction)
+        #Presents the prediction as a nice little table of % likelihoods. 
+        prediction_dict = {'Benign': [prediction[0][0]], 'Malignant': [prediction[0][1]]} #Makes a dictionary with keys of conditions and results from the model's output
+        st.table(pd.DataFrame.from_dict(prediction_dict)) #Prints a table of the results on the website.
+
+        benign_percent = prediction[0][0]
+        malignant_percent = prediction[0][1]
+        labels = ['Benign', 'Malignant']
+        sizes = [benign_percent, malignant_percent]
+
+        fig1, ax1 = plt.subplots()
+        explode = (0, 0.1)
+        ax1.pie(sizes, explode=explode, labels=labels, atopct='%1.1f%%', shadow=True, startangle=90)
+
+        ax1.axis('equal')
+
+        st.pyplot(fig1)
 
         st.markdown(subheader + 'Should you seek medical help?' + "</p>", unsafe_allow_html=True)
         if condition.conditionName == 'Malignant':

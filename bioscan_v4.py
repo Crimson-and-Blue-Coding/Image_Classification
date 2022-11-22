@@ -41,7 +41,7 @@ def image_conversion(image):
         Processes a provided image so that it can be input into a model.
     """
 
-    image = np.array(image)
+    image = np.array(image) #Converts the image to an np array
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) #Converts image to RGB. Better for model.
     image = cv2.resize(image, IMAGE_SIZE) #Resizes the image to a standard size for the model.
 
@@ -67,7 +67,7 @@ def edit_prediction(prediction):
     prediction[1] = 'Malignant'
 
 #================================Webpage Code====================================
-#Text to display on the webpage.
+#Creates the background for the webpage
 import base64
 def background(image_file):
     with open(image_file, "rb") as image_file:
@@ -84,9 +84,8 @@ def background(image_file):
     unsafe_allow_html=True
     )
 background('background_img.jpg')   
-#def header(url):
-#    st.markdown(f'<p style="background-color:#0066cc;color:#33ff33;font-size:24px;border-radius:2%;">{url}</p>', unsafe_allow_html=True)
-#header('BioScan')
+
+#Text to display on the webpage
 st.markdown(title + 'BioScan' + "</p>", unsafe_allow_html=True)
 st.markdown(header + 'An image classifier.\n\n' + "</p>", unsafe_allow_html=True)
 st.sidebar.subheader('Disclaimer')
@@ -129,11 +128,10 @@ else:
         prediction = run_model(image, model) #runs the image through the model stores as in variable prediction
 
         #Gives answer based on prediction.
-        #I guessed how the output would look. We should discuss together.
-        condition = Conditions()
-        condition.generateResults(np.argmax(prediction))
-        if condition.conditionName == "Benign":
-            st.balloons()
+        condition = Conditions() #Creates a new instance of condition class
+        condition.generateResults(np.argmax(prediction)) #Generates a condition result based upon the results of the model
+        if condition.conditionName == "Benign": #If the condition assigned to the user's image is 'Benign'
+            st.balloons() #Calls a streamlit function to show balloons on the webapp!
         
         basic = '<p style="font-family:Georgia; color:Black; font-size: 24px;">'
         st.markdown(basic + f"Our image clasifier labeled it as '{condition.conditionName}'" +"</p>", unsafe_allow_html=True)
@@ -155,9 +153,9 @@ else:
             st.markdown(basic + "You checked 3 or more of the symptoms in the check box:" +"</p>", unsafe_allow_html=True) 
             st.markdown(basic + "Because of this, if you are still worried about your condition even after the benign results, it is recommended to see a doctor!" +"</p>", unsafe_allow_html=True) 
             
-        #Shold present the prediction as a nice little table of % likelihoods. 
-        prediction_dict = {'Benign': [prediction[0][0]], 'Malignant': [prediction[0][1]]}
-        st.table(pd.DataFrame.from_dict(prediction_dict))
+        #Presents the prediction as a nice little table of % likelihoods. 
+        prediction_dict = {'Benign': [prediction[0][0]], 'Malignant': [prediction[0][1]]} #Makes a dictionary with keys of conditions and results from the model's output
+        st.table(pd.DataFrame.from_dict(prediction_dict)) #Prints a table of the results on the website.
 
         benign_percent = prediction[0][0]
         malignant_percent = prediction[0][1]
