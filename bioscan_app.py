@@ -186,7 +186,7 @@ else:
 
         fig1, ax1 = plt.subplots()
         explode = (0, 0.1)
-        ax1.pie(sizes, explode=explode, labels=labels, atopct='%1.1f%%', shadow=True, startangle=90)
+        ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%', shadow=True, startangle=90)
 
         ax1.axis('equal')
 
