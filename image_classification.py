@@ -22,7 +22,7 @@ IMAGE_SIZE = (150, 150)
 
 #loading the data
 def load_data():
-    DIRECTORY = r"C:\Users\clee1\miniconda3\envs\tf\BioScan\Image_Classification"
+    DIRECTORY = r"C:\Users\clee1\Desktop\BioScan\Image_Classification"
     CATEGORY = ["seg_train", "seg_test"]
 
     output = []
