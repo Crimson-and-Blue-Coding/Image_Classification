@@ -22,7 +22,7 @@ import pandas as pd
 from conditions import Conditions
 
 #=========================Importing the model=================================
-model = tf.keras.models.load_model('efficientnet.hdf5')
+model = tf.keras.models.load_model('smaller_model.h5')
 
 #=============================Constant Variables==================================
 IMAGE_SIZE = (150, 150)
