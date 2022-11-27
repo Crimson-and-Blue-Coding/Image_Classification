@@ -17,7 +17,6 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 import cv2
 from PIL import Image
-from io import BytesIO
 import pandas as pd
 
 #Class Import
@@ -68,18 +67,15 @@ def edit_prediction(prediction):
     prediction[0] = 'Benign'
     prediction[1] = 'Malignant'
 
-def graph_percentages(prediction):
-    labels = ['Malignant', 'Benign']
-    malig_percent = prediction[0][1]*100
-    benign_percent = prediction[0][0]*100
-    sizes = [malig_percent, benign_percent]
-    fig1, ax1 = plt.subplots(figsize=(5, 5))
-    ax1.pie(sizes, labels=labels, shadow=True, autopct='%1.1f%%', startangle=90)
-    ax1.axis('equal')
-    
-    buf = BytesIO()
-    fig1.savefig(buf, format="png")
-    return buf
+def average_predictions(predictions):
+    malig_val = 0
+    benign_val = 0
+    for prediction in predictions:
+        malig_val += prediction[0][1]
+        benign_val += prediction[0][0]
+    avg_malig_val = malig_val/len(predictions)
+    avg_benign_val = benign_val/len(predictions)
+    return [[avg_benign_val, avg_malig_val]]
 
 #================================Webpage Code====================================
 #Text to display on the webpage.
@@ -121,8 +117,10 @@ else:
         user_image_list.append(user_image)
 
 
+st.text('')
+st.text('')
 #optional survery so user is able to add symptoms they are experiencing to create more accurate results
-
+st.markdown(subheader + 'Supplementary Survey:' + "</p>", unsafe_allow_html=True)        
 counter = 0
 st.markdown(basic + 'Complete the optional Survey below based on the symptoms you are experiencing:' + "</p>", unsafe_allow_html=True)
 options = st.multiselect( " ",
@@ -151,6 +149,9 @@ for i in range(len(options)):
         counter = 0
 
 percent = int((counter/18)*100)
+
+st.text('')
+st.text('')
 #Code for processing the image. 
 if len(user_image_list) == 0:
     #No image provided
@@ -174,27 +175,86 @@ else:
 
             image_predictions.append(img_data)
 
-        for image_results in image_predictions:
-            image = image_results['image']
-            image.thumbnail((400, 400), Image.ANTIALIAS)
-            # image = image.resize((400, 400))
-            graph = graph_percentages(image_results['prediction'])
-            graph = Image.open(graph)
-            graph.thumbnail((300, 300))
-            st.image([image, graph])
-            st.write(f"Result: {image_results['result']}")
+        st.text('')
+        st.text('')
 
+        tab_names = [f"Image {num}" for num in range(1, len(image_predictions)+1)]
+        tabs = st.tabs(tab_names)
+
+        for tab, image_results in zip(tabs, image_predictions):
+            with tab:
+                image = image_results['image']
+                image.thumbnail((650, 650), Image.ANTIALIAS)
+                st.image(image)
+
+                malig_percent = round(image_results['prediction'][0][1], 2)*100
+                benig_percent = round(image_results['prediction'][0][0], 2)*100
+                malig_percent = int(round(malig_percent, 0))
+                benig_percent = int(round(benig_percent, 0))
+                
+                col1, col2 = st.columns(2)
+                col1.metric(label='**Malignant**', value=f"{malig_percent}%", delta=None)
+                col2.metric(label='**Benign**', value=f"{benig_percent}%", delta=None)
+
+                result = image_results['result']
+                if result == 'Malignant':
+                    st.error("Result: **" + result + "**")
+                else:
+                    st.success(f"Result: {result}")
+
+        st.text('')
+        st.text('')
+                
+        averaged_prediction = average_predictions([image_results['prediction'] for image_results in image_predictions])
 
         #st.image(image, use_column_width=True) #displays the provided image on the web app
         #Gives answer based on prediction.
         #I guessed how the output would look. We should discuss together.
         condition = Conditions()
-        condition.generateResults(np.argmax(prediction))
+        condition.generateResults(np.argmax(averaged_prediction))
         if condition.conditionName == "Benign":
             st.balloons()
         
         basic = '<p style="font-family:Georgia; color:Black; font-size: 24px;">'
-        st.markdown(basic + f"Our image clasifier labeled it as '{condition.conditionName}'" +"</p>", unsafe_allow_html=True)
+        st.markdown(subheader + 'Final Result:' + "</p>", unsafe_allow_html=True)        
+        st.markdown(basic + f"Our image classifier labeled it as '{condition.conditionName}'" +"</p>", unsafe_allow_html=True)
+
+        outOf = int((len(options)/9)*100)
+
+        if percent >= 30 or options.count('Occasionally bleeds') == 1:
+            st.markdown(basic + f"You have {outOf}% of the symptoms in the survey:" +"</p>", unsafe_allow_html=True) 
+            st.markdown(basic + "Because of this, if you are still worried about your condition even after the results, it is recommended to see a doctor!" +"</p>", unsafe_allow_html=True) 
+            
+        #Presents the prediction as a nice little table of % likelihoods. 
+        prediction_dict = {'Benign': [averaged_prediction[0][0]], 'Malignant': [averaged_prediction[0][1]]} #Makes a dictionary with keys of conditions and results from the model's output
+        st.table(pd.DataFrame.from_dict(prediction_dict)) #Prints a table of the results on the website.
+
+        benign_percent = averaged_prediction[0][0]
+        malignant_percent = averaged_prediction[0][1]
+        labels = ['Benign', 'Malignant']
+        sizes = [benign_percent, malignant_percent]
+
+        fig1, ax1 = plt.subplots()
+        explode = (0, 0.1)
+        ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%', shadow=True, startangle=90)
+
+        ax1.axis('equal')
+
+        st.pyplot(fig1)
+
+        st.text('')
+        st.text('')
+
+        st.markdown(subheader + 'Should you seek medical help?' + "</p>", unsafe_allow_html=True)
+        if condition.conditionName == 'Malignant':
+            st.markdown(basic + "Because of the image results being Malignant, it is highly recommended to see a doctor!" + "</p>", unsafe_allow_html=True)
+        elif percent >= 30 and condition.conditionName == 'Benign':
+            st.markdown(basic + "Because of the severity of the symptoms you chose in the survery, if you are still worried about your condition even after the Benign results, it is highly recommended to see a doctor!" + "</p>", unsafe_allow_html=True)
+        elif condition.conditionName == 'Benign' and options.count('None of the Above') == 1:
+            st.markdown(basic + "You have no symptoms and your image results are Benign, but see a doctor if you are still concerned." + "</p>", unsafe_allow_html=True)
+        else:
+            st.markdown(basic + "If you are still concerned after results, see a doctor." + "</p>", unsafe_allow_html=True)
+
         st.markdown(subheader + 'More Information:' + "</p>", unsafe_allow_html=True)
         #st.write(f"{condition.conditionName}")
         st.markdown(basicbold + f'{condition.conditionName}' + "</p>", unsafe_allow_html=True)
@@ -208,39 +268,6 @@ else:
         st.markdown(basic + "It was created for a class project." +"</p>", unsafe_allow_html=True)
         st.markdown(basic + "It should not be taken as valid medical advice" +"</p>", unsafe_allow_html=True)
         st.markdown(basic + "If you are concerned about your condition see a doctor!" +"</p>", unsafe_allow_html=True) 
-
-        outOf = int((len(options)/9)*100)
-
-        if percent >= 30 or options.count('Occasionally bleeds') == 1:
-            st.markdown(basic + f"You have {outOf}% of the symptoms in the survey:" +"</p>", unsafe_allow_html=True) 
-            st.markdown(basic + "Because of this, if you are still worried about your condition even after the results, it is recommended to see a doctor!" +"</p>", unsafe_allow_html=True) 
-            
-        #Presents the prediction as a nice little table of % likelihoods. 
-        prediction_dict = {'Benign': [prediction[0][0]], 'Malignant': [prediction[0][1]]} #Makes a dictionary with keys of conditions and results from the model's output
-        st.table(pd.DataFrame.from_dict(prediction_dict)) #Prints a table of the results on the website.
-
-        benign_percent = prediction[0][0]
-        malignant_percent = prediction[0][1]
-        labels = ['Benign', 'Malignant']
-        sizes = [benign_percent, malignant_percent]
-
-        fig1, ax1 = plt.subplots()
-        explode = (0, 0.1)
-        ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%', shadow=True, startangle=90)
-
-        ax1.axis('equal')
-
-        st.pyplot(fig1)
-
-        st.markdown(subheader + 'Should you seek medical help?' + "</p>", unsafe_allow_html=True)
-        if condition.conditionName == 'Malignant':
-            st.markdown(basic + "Because of the image results being Malignant, it is highly recommended to see a doctor!" + "</p>", unsafe_allow_html=True)
-        elif percent >= 30 and condition.conditionName == 'Benign':
-            st.markdown(basic + "Because of the severity of the symptoms you chose in the survery, if you are still worried about your condition even after the Benign results, it is highly recommended to see a doctor!" + "</p>", unsafe_allow_html=True)
-        elif condition.conditionName == 'Benign' and options.count('None of the Above') == 1:
-            st.markdown(basic + "You have no symptoms and your image results are Benign, but see a doctor if you are still concerned." + "</p>", unsafe_allow_html=True)
-        else:
-            st.markdown(basic + "If you are still concerned after results, see a doctor." + "</p>", unsafe_allow_html=True)
     else:
         st.markdown(subheader + 'Acknowledge Disclaimer' + "</p>", unsafe_allow_html=True)
         st.markdown(basic + 'Before your results are processed, please acknowledge that you understand that this program does not provide valid medical advice.' + "</p>", unsafe_allow_html=True)
