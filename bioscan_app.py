@@ -22,7 +22,7 @@ import pandas as pd
 from conditions import Conditions
 
 #=========================Importing the model=================================
-model = tf.keras.model_from_json('model.json')
+model = tf.keras.models.model_from_json('model.json')
 
 #=============================Constant Variables==================================
 IMAGE_SIZE = (150, 150)
