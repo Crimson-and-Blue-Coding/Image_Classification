@@ -13,7 +13,6 @@ Purpose:
 import streamlit as st
 import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib.pyplot as plt
 import tensorflow as tf
 import cv2
 from PIL import Image
@@ -23,7 +22,7 @@ import pandas as pd
 from conditions import Conditions
 
 #=========================Importing the model=================================
-model = tf.keras.models.load_model('epoch_150.hdf5')
+model = tf.keras.models.load_model('epoch_2500.hdf5')
 
 #=============================Constant Variables==================================
 IMAGE_SIZE = (150, 150)
