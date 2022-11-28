@@ -205,7 +205,7 @@ else:
                 image.thumbnail((650, 650), Image.ANTIALIAS) #Sets the image's size to be consistent for display within the tab's window.
                 st.image(image) #Displays the image.
 
-                malig_percent = round(image_results['prediction'][0][1], 2)*100 
+                malig_percent = round(image_results['prediction'][0][1], 2)*100 #
                 benig_percent = round(image_results['prediction'][0][0], 2)*100
                 malig_percent = int(round(malig_percent, 0))
                 benig_percent = int(round(benig_percent, 0))
@@ -220,20 +220,25 @@ else:
                 else:
                     st.success(f"Result: {result}")
 
+        #Space formatting for text of the webapp
         st.text('')
         st.text('')
                 
         averaged_prediction = average_predictions([image_results['prediction'] for image_results in image_predictions])
 
-        condition = Conditions()
-        condition.generateResults(np.argmax(averaged_prediction))
+        #Assigns a condition to the results.
+        condition = Conditions() #Calls the conditions class.
+        condition.generateResults(np.argmax(averaged_prediction)) #passes the results of teh average of predictions to the conditions results generator to get information relevant to the condition.
         if condition.conditionName == "Benign":
+            #If the condition is benign presents balloons to the display using streamlit's built in balloons method.
             st.balloons()
         
-        basic = '<p style="font-family:Georgia; color:Black; font-size: 24px;">'
+        #Changes the default  display
         st.markdown(subheader + 'Final Result:' + "</p>", unsafe_allow_html=True)        
         st.markdown(basic + f"Our image classifier labeled it as '{condition.conditionName}'" +"</p>", unsafe_allow_html=True)
 
+
+        #Calculates the results of the user survey
         outOf = int((len(options)/9)*100)
 
         if percent >= 30 or options.count('Occasionally bleeds') == 1:
